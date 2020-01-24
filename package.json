@@ -1,0 +1,23 @@
+{
+  "name": "readit",
+  "version": "1.0.0",
+  "description": "A Bookmark App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "watch": "nodemon --exec electron .",
+    "reset": "git reset --hard"
+  },
+  "repository": "https://github.com/monuv009/readit.git",
+  "keywords": [
+    "Electron",
+    "Bookmarking App"
+  ],
+  "author": "Vignesh S",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^5.0.10",
+    "nodemon": "^1.19.2"
+  },
+  "dependencies": {}
+}
