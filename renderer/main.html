@@ -7,7 +7,28 @@
     <link rel="stylesheet" href="main.css">
   </head>
   <body>
-    <h1>Hello World!</h1>
+
+    <header>
+      <button id="show-modal">+</button>
+      <input type="text" id="search" placeholder="Search">
+    </header>
+
+    <main>
+      <p id="no-items">No Items</p>
+      <div id="items"></div>
+
+      <!-- <div class="read-item">
+        <img src="https://images.pexels.com/photos/58997/pexels-photo-58997.jpeg">
+        <h2>Title of an item added</h2>
+      </div> -->
+      
+    </main>
+
+    <div id="modal">
+      <input type="text" id="url" placeholder="Enter URL">
+      <button id="add-item">Add Item</button>
+      <button id="close-modal">Cancel</button>
+    </div>
 
     <script>
       // You can also require other files to run in this process
