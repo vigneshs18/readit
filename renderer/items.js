@@ -1,5 +1,6 @@
 // Modules
 const fs = require('fs')
+const { shell } = require('electron')
 
 // dom nodes
 let items = document.getElementById('items')
@@ -13,6 +14,71 @@ fs.readFile(`${__dirname}/reader.js`, (err, data) => {
 // track items in storage
 exports.storage = JSON.parse(localStorage.getItem('readit-items')) || []
 
+// listen for done message from render window
+window.addEventListener('message', e => {
+
+    // check for correct message
+    if(e.data.action === 'delete-reader-item') {
+
+        // delete item at given index
+        this.delete(e.data.itemIndex)
+
+        // close the reader window
+        e.source.close()
+    }    
+})
+
+// delete item
+exports.delete = itemIndex => {
+    //console.log(itemIndex)
+    // remove item from dom
+    items.removeChild(items.childNodes[itemIndex])
+
+    // remove from storage
+    this.storage.splice(itemIndex, 1)
+
+    // persist
+    this.save()
+
+    // get new selected item index
+    if(itemIndex === 0){
+        return
+    } else {
+        let newSelectedItemIndex = itemIndex - 1
+
+        // set item at new index as selected
+        document.getElementsByClassName('read-item')[newSelectedItemIndex].classList.add('selected')
+    }
+    
+
+    
+}
+
+// get selected item index
+exports.getSelectedItem = () => {
+
+    // get selected node
+    let currentItem = document.getElementsByClassName('read-item selected')[0]
+    console.log(currentItem)
+    // get item index
+    let itemIndex = 0
+    let child = currentItem.previousSibling
+    // console.log(child)
+    // console.log(child.previousSibling)
+    // console.log(itemIndex)
+    while( (child.previousSibling) != null ){
+        child = child.previousSibling
+        itemIndex++
+        // console.log(child)
+        // console.log(child.previousSibling)
+        // console.log(itemIndex)
+    }
+    console.log(itemIndex)
+    // return selected item and index
+    return { node: currentItem, index: itemIndex }
+}
+
+
 // persist storage
 exports.save = () => {
     localStorage.setItem('readit-items', JSON.stringify(this.storage))
@@ -22,7 +88,7 @@ exports.save = () => {
 exports.select = e => {
 
     // remove currently selected item class
-    document.getElementsByClassName('read-item selected')[0].classList.remove('selected')
+    this.getSelectedItem().node.classList.remove('selected')
 
     // add to clicked item
     e.currentTarget.classList.add('selected')
@@ -32,16 +98,30 @@ exports.select = e => {
 exports.changeSelection = direction => {
     
     // get selected item
-    let currentItem = document.getElementsByClassName('read-item selected')[0]
+    let currentItem = this.getSelectedItem()
 
     // handle up/down
-    if(direction === 'ArrowUp' && currentItem.previousSibling){
-        currentItem.classList.remove('selected')
-        currentItem.previousSibling.classList.add('selected')
-    } else if (direction === 'ArrowDown' && currentItem.nextSibling) {
-        currentItem.classList.remove('selected')
-        currentItem.nextSibling.classList.add('selected')
+    if(direction === 'ArrowUp' && currentItem.node.previousSibling){
+        currentItem.node.classList.remove('selected')
+        currentItem.node.previousSibling.classList.add('selected')
+    } else if (direction === 'ArrowDown' && currentItem.node.nextSibling) {
+        currentItem.node.classList.remove('selected')
+        currentItem.node.nextSibling.classList.add('selected')
     }
+}
+
+// Open item in native browser
+exports.openNative = () => {
+
+    // Only if we have item
+    if(!this.storage.length) return
+
+    // get selected item
+    let selectedItem = this.getSelectedItem()
+
+    // open in system browser
+    shell.openExternal(selectedItem.node.dataset.url)
+
 }
 
 // Open selected item
@@ -52,10 +132,10 @@ exports.open = () => {
 
     // get selected item
 
-    let selectedItem = document.getElementsByClassName('read-item selected')[0]
+    let selectedItem = this.getSelectedItem()
 
     // get item's URL
-    let contentURL = selectedItem.dataset.url
+    let contentURL = selectedItem.node.dataset.url
     
     // open item in proxy BrowserWindow
     let readerWin = window.open(contentURL, '', `
@@ -70,8 +150,8 @@ exports.open = () => {
         contextIsolation=1
     `)
 
-    // Inject JavaScript
-    readerWin.eval(readerJS)
+    // Inject JavaScript with specific item index (selectedItem.index)
+    readerWin.eval(readerJS.replace('{{index}}', selectedItem.index))
 }
 
 // add new item

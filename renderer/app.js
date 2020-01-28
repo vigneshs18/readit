@@ -9,6 +9,29 @@ let showModal = document.getElementById('show-modal'),
     itemUrl = document.getElementById('url'),
     search = document.getElementById('search')
 
+// Open new item modal
+window.newItem = () => {
+    showModal.click()
+}
+
+// Ref items.open globally
+window.openItem = items.open
+
+// Ref items.delete globally
+window.deleteItem = () => {
+    let selectedItem = items.getSelectedItem()
+    console.log('selectedItemIndex: ', selectedItem.index)
+    items.delete(selectedItem.index)
+}
+
+// open item in native window
+window.openItemNative = items.openNative
+
+// Focus to search items
+window.searchItems = () => {
+    search.focus()
+}
+
 // filter items with "search"
 search.addEventListener('keyup', e => {
     
