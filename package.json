@@ -1,25 +1,50 @@
 {
   "name": "readit",
-  "version": "1.0.0",
-  "description": "A Bookmark App",
+  "version": "1.0.1",
+  "description": "A Bookmarking App",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "watch": "nodemon --exec electron .",
-    "reset": "git reset --hard"
+    "reset": "git reset --hard",
+    "build": "electron-builder -w",
+    "release": "electron-builder -w -p 'onTagOrDraft'",
+    "win-cert": "electron-builder create-self-signed-cert -p vigneshsystems"
   },
-  "repository": "https://github.com/monuv009/readit.git",
+  "repository": "https://github.com/monuv009/readit",
+  "homepage": "https://github.com/monuv009/readit",
   "keywords": [
     "Electron",
     "Bookmarking App"
   ],
-  "author": "Vignesh S",
+  "author": "Vignesh Systems",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^5.0.10",
+    "electron-builder": "^22.3.2",
     "nodemon": "^1.19.2"
   },
   "dependencies": {
+    "electron-log": "^4.0.4",
+    "electron-updater": "^4.2.0",
     "electron-window-state": "^5.0.3"
+  },
+  "build": {
+    "appId": "com.vigneshsystems.readit",
+    "copyright": "Copyright 2020 vigneshsystems.com",
+    "publish": {
+      "provider": "github"
+    },
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "certificateFile": "private/vigneshsystems.pfx",
+      "certificatePassword": "",
+      "publisherName": "vigneshsystems"
+    },
+    "linux": {
+      "category": "Utility"
+    }
   }
 }
