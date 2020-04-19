@@ -11,8 +11,8 @@
     "release": "electron-builder -w -p 'onTagOrDraft'",
     "win-cert": "electron-builder create-self-signed-cert -p vigneshsystems"
   },
-  "repository": "https://github.com/monuv009/readit",
-  "homepage": "https://github.com/monuv009/readit",
+  "repository": "https://github.com/vigneshs18/readit",
+  "homepage": "https://github.com/vigneshs18/readit",
   "keywords": [
     "Electron",
     "Bookmarking App"
